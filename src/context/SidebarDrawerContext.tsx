@@ -3,28 +3,31 @@ import { useRouter } from "next/router";
 import { createContext, ReactNode, useContext, useEffect } from "react";
 
 interface SidebarDrawerProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 type SidebarDrawerContextData = UseDisclosureReturn;
 
-const SidebarDrawerContext = createContext({} as UseDisclosureReturn);
 
-export function SidebarDrawerProvider({ children }: SidebarDrawerProviderProps) {
-    const disclosure = useDisclosure(); // retorna informações se o drawer está aberto, fechado, etc :p
-    const router = useRouter();
+// Criando contexto
+const SidebarDrawerContext = createContext({} as UseDisclosureReturn); // tipando os dados que tenho no contexto
 
-    useEffect(() => {
-        disclosure.onClose(); // fecha o sidebar quando user troca de rota
-    }, [router.asPath])
+// Nosso Provider
+export function SidebarDrawerProvider({children}: SidebarDrawerProviderProps) {
+  const disclosure = useDisclosure(); 
+  const router = useRouter();
 
+  useEffect(() => {
+    disclosure.onClose(); // fechar sidebar quando houver troca de rota
+  }, [router.asPath])
 
-    return (
-        <SidebarDrawerContext.Provider value={disclosure}>
-            {children}
-        </SidebarDrawerContext.Provider>
-    )
+  return (
+    <SidebarDrawerContext.Provider value={disclosure}>
+      {children}
+    </SidebarDrawerContext.Provider>
+  );
 }
 
-// criando hook próprio xD
+// para nao precisar ficar usando o useContext do React
+// criando um hook próprio
 export const useSidebarDrawer = () => useContext(SidebarDrawerContext)
