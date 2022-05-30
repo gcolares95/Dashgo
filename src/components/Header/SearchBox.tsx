@@ -1,7 +1,12 @@
 import { Flex, Icon, Input } from "@chakra-ui/react";
+import { useRef } from "react";
 import { RiSearchLine } from "react-icons/ri";
 
+// Controlled components => salvar no estado o dado do input quando user digita
+// Uncontrolled components => Acessar valor só quando precisar dele
 export function SearchBox() {
+    // debounce 
+    
     return (
         <Flex
             as="label"
