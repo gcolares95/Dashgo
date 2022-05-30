@@ -22,7 +22,7 @@ export default function UserList() {
                     <Flex mb="8" justify="space-between" align="center">
                         <Heading size="lg" fontWeight="normal">Usuários</Heading>
                         {/* Passando passHref pois, Button não é uma tag "a" diretamente */}
-                        <Link href="users/create" passHref>
+                        <Link href="/   users/create" passHref>
                             <Button
                                 as="a"
                                 size="sm"
