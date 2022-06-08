@@ -1,21 +1,30 @@
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr, Text, useBreakpointValue } from "@chakra-ui/react";
-import Link from "next/link";
 import { useEffect } from "react";
+import Link from "next/link";
+import { useQuery } from 'react-query';
 import { RiAddLine } from "react-icons/ri";
+import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr, Text, useBreakpointValue, Spinner } from "@chakra-ui/react";
+
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
+
 export default function UserList() {
+    const { data, isLoading, error } = useQuery('users', async () => { // useQuery('nomeDaQuery'), o nome da query será uma chave que será armazenada no cache
+        // 2º parâmetro é a função que retornará os dados
+        const response = await fetch('http://localhost:3000/api/users');
+        const data = response.json();
+
+        return data;
+    })
+
     const isWideVersion = useBreakpointValue({
         base: false,
         lg: true
     });
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/users')
-            .then(response => response.json())
-            .then(data => console.log(data))
+
     }, [])
 
     return (
@@ -42,34 +51,46 @@ export default function UserList() {
                         </Link>
                     </Flex>
 
-                    <Table colorScheme="whiteAlpha">
-                        <Thead>
-                            <Tr>
-                                <Th px={["0", "4", "6"]} color="gray.300" width="8">
-                                    <Checkbox colorScheme="pink" />
-                                </Th>
-                                <Th>Usuário</Th>
-                                {isWideVersion && <Th>Data de cadastro</Th>}
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            <Tr>
-                                <Td px={["0", "4", "6"]}>
-                                    <Checkbox colorScheme="pink" />
-                                </Td>
-                                <Td>
-                                    <Box>
-                                        <Text fontWeight="bold">Guilherme Colares</Text>
-                                        <Text fontSize="sm" color="gray.300">gcolares95@gmail.com</Text>
-                                    </Box>
-                                </Td>
-                                {isWideVersion && <Td>04 de abril, 2021</Td>}
+                    {isLoading ? (
+                        <Flex justify="center">
+                            <Spinner />
+                        </Flex>
+                    ) : error ? (
+                        <Flex>
+                            <Text>Falha ao obter dados dos usuários</Text>
+                        </Flex>
+                    ) : (
+                        <>
+                            <Table colorScheme="whiteAlpha">
+                                <Thead>
+                                    <Tr>
+                                        <Th px={["0", "4", "6"]} color="gray.300" width="8">
+                                            <Checkbox colorScheme="pink" />
+                                        </Th>
+                                        <Th>Usuário</Th>
+                                        {isWideVersion && <Th>Data de cadastro</Th>}
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td px={["0", "4", "6"]}>
+                                            <Checkbox colorScheme="pink" />
+                                        </Td>
+                                        <Td>
+                                            <Box>
+                                                <Text fontWeight="bold">Guilherme Colares</Text>
+                                                <Text fontSize="sm" color="gray.300">gcolares95@gmail.com</Text>
+                                            </Box>
+                                        </Td>
+                                        {isWideVersion && <Td>04 de abril, 2021</Td>}
 
-                            </Tr>
-                        </Tbody>
-                    </Table>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
 
-                    <Pagination />
+                            <Pagination />
+                        </>
+                    )}
                 </Box>
             </Flex>
         </Box>
