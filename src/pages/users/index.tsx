@@ -28,8 +28,9 @@ export default function UserList() {
                 })
             }
         })
-
         return users;
+    }, {
+        staleTime: 1000 * 5 // durante 5 segundos os dados estarão "fresh(frescos", ou seja, sem carregadas
     })
 
     const isWideVersion = useBreakpointValue({

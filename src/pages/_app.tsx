@@ -3,6 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { theme } from '../styles/theme';
 import { SidebarDrawerProvider }  from '../context/SidebarDrawerContext';
 import { makeServer } from '../services/mirage/mirage';
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClientProvider, QueryClient } from 'react-query';
 
 // Verificando qual ambiente está rodando nossa aplicação para inicir o mirage, process,env.NODE_ENV é setada automaticamente pelo next
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </SidebarDrawerProvider>
       </ChakraProvider>
 
+      <ReactQueryDevtools />
     </QueryClientProvider>
   )
 }
