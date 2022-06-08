@@ -28,7 +28,7 @@ export function makeServer() {
             })
         },
         seeds(server) {                            // criar dados assim que o servidor do mirage for inicializado
-            server.createList('user', 200)         // 'user' é o nome do factorie criado e 200 a quantidade de usuários
+            server.createList('user', 10)         // 'user' é o nome do factorie criado e 200 a quantidade de usuários
         },
 
         routes() {                                 // rotas que teremos no mirage
