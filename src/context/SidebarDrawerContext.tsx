@@ -8,9 +8,8 @@ interface SidebarDrawerProviderProps {
 
 type SidebarDrawerContextData = UseDisclosureReturn;
 
-
 // Criando contexto
-const SidebarDrawerContext = createContext({} as UseDisclosureReturn); // tipando os dados que tenho no contexto
+const SidebarDrawerContext = createContext({} as SidebarDrawerContextData); // tipando os dados que tenho no contexto
 
 // Nosso Provider
 export function SidebarDrawerProvider({children}: SidebarDrawerProviderProps) {
