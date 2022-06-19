@@ -1,41 +1,21 @@
 import Link from "next/link";
 import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr, Text, useBreakpointValue, Spinner } from "@chakra-ui/react";
-import { useQuery } from 'react-query';
 import { RiAddLine } from "react-icons/ri";
-import { api } from "../../services/api";
+import { useUsers } from "../../services/hooks/useUsers";
 
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function UserList() {
-    const { data, isLoading, isFetching, error } = useQuery('users', async () => { // useQuery('nomeDaQuery'), o nome da query será uma chave que será armazenada no cache
-        const { data } = await api.get('users');
-
-        const users = data.users.map((user) => {
-            return {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                createdAt: new Date(user.createdAt).toLocaleDateString('pt-br', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                })
-            }
-        })
-        return users;
-    }, {
-        staleTime: 1000 * 5 // durante 5 segundos os dados estarão "fresh(frescos", ou seja, sem precisar ser re-carregados
-    })
-
+    const { data, isLoading, isFetching, error } = useUsers();
+    
     const isWideVersion = useBreakpointValue({
         base: false,
         lg: true
     });
 
     return (
-
         <Box>
             <Header />
 
@@ -46,7 +26,7 @@ export default function UserList() {
                     <Flex mb="8" justify="space-between" align="center">
                         <Heading size="lg" fontWeight="normal">
                             Usuários
-                            { !isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
+                            {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
                         </Heading>
                         {/* Passando passHref pois, Button não é uma tag "a" diretamente */}
                         <Link href="/users/create" passHref>
@@ -102,7 +82,6 @@ export default function UserList() {
                                     })}
                                 </Tbody>
                             </Table>
-
                             <Pagination />
                         </>
                     )}
