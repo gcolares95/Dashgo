@@ -1,5 +1,5 @@
 // Configuração do mirage/servidor do mirage
-import { createServer, Factory, Model } from 'miragejs';
+import { createServer, Factory, Model, Response } from 'miragejs';
 import { faker } from '@faker-js/faker';
 
 type User = {
@@ -28,18 +28,35 @@ export function makeServer() {
             })
         },
         seeds(server) {                            // criar dados assim que o servidor do mirage for inicializado
-            server.createList('user', 10)         // 'user' é o nome do factorie criado e 200 a quantidade de usuários
+            server.createList('user', 200)         // 'user' é o nome do factorie criado e 200 a quantidade de usuários
         },
 
         routes() {                                 // rotas que teremos no mirage
             this.namespace = 'api';                // setar o caminho que a aplicação vai precisar acessar para acessar as rotas do mirage 
             this.timing = 750;                     // Toda chamada a api do mirage demore 750 millisegundos para testar loading, etc
 
-            this.get('/users');                    // mirage automaticamente retorna lista de usuário dentro da nossa aplicação
+            this.get('/users', function (schema, request) {
+                const { page = 1, per_page = 10 } = request.queryParams
+                
+                const total = schema.all('user').length; // obtendo o tamanho de usuários dentro do schema do mirage
+
+                const pageStart = (Number(page) - 1) * Number(per_page);
+                const pageEnd = pageStart + Number(per_page);
+
+                const users = this.serialize(schema.all('user'))
+                    .users.slice(pageStart, pageEnd);
+
+                return new Response(
+                    200,
+                    { 'x-total-count': String(total) }, // passando headers
+                    { users }
+                )
+            });  
+                              
             this.post('/users');
 
-            this.namespace = '';                   // Ao terminar de definir as rotas do mirage, reseta o namespace para '', para não prejudicas as rotas "api" que existe dentro do next
-            this.passthrough();                    // Faz com que as chamadas para o endereço 'api' passem pelo mirage, e se não for detectadas pelas rotas do mirage, passem adiante para o next, etc   
+            this.namespace = '';        
+            this.passthrough();              
         }
     })
 
