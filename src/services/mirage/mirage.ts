@@ -36,27 +36,27 @@ export function makeServer() {
             this.timing = 750;                     // Toda chamada a api do mirage demore 750 millisegundos para testar loading, etc
 
             this.get('/users', function (schema, request) {
-                const { page = 1, per_page = 10 } = request.queryParams
-                
-                const total = schema.all('user').length; // obtendo o tamanho de usuários dentro do schema do mirage
+                const { page = 1, per_page = 10 } = request.queryParams;
 
-                const pageStart = (Number(page) - 1) * Number(per_page);
+                const total = schema.all('user').length;
+                const pageStart = (Number(page) - 1) * Number(per_page); // para começar pelo registro 0
                 const pageEnd = pageStart + Number(per_page);
 
                 const users = this.serialize(schema.all('user'))
                     .users.slice(pageStart, pageEnd);
 
                 return new Response(
-                    200,
-                    { 'x-total-count': String(total) }, // passando headers
+                    200,                                  // status code (200 sucesso)
+                    { 'x-total-count': String(total) },   // headers, utilizando um padrão da comunidade    
                     { users }
                 )
-            });  
-                              
+
+            });
+
             this.post('/users');
 
-            this.namespace = '';        
-            this.passthrough();              
+            this.namespace = '';
+            this.passthrough();
         }
     })
 
