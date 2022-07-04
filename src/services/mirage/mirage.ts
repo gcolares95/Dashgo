@@ -35,22 +35,22 @@ export function makeServer() {
             this.namespace = 'api';                // setar o caminho que a aplicação vai precisar acessar para acessar as rotas do mirage 
             this.timing = 750;                     // Toda chamada a api do mirage demore 750 millisegundos para testar loading, etc
 
-            this.get('/users', function (schema, request) {
-                const { page = 1, per_page = 10 } = request.queryParams;
-
+            this.get('/users', function(schema, request) {
+                const { page = 1, per_page = 10} = request.queryParams;
+                
                 const total = schema.all('user').length;
-                const pageStart = (Number(page) - 1) * Number(per_page); // para começar pelo registro 0
-                const pageEnd = pageStart + Number(per_page);
 
-                const users = this.serialize(schema.all('user'))
+                const pageStart = (Number(page) - 1) * Number(per_page);
+                const pageEnd = pageStart + Number(per_page);
+                
+                const users = this.serialize(schema.all('user')) // utilizando serialização, faz com que os dados retornados passem pelo processo de serialização do mirage, para ter controle dos dados e converter
                     .users.slice(pageStart, pageEnd);
 
                 return new Response(
-                    200,                                  // status code (200 sucesso)
-                    { 'x-total-count': String(total) },   // headers, utilizando um padrão da comunidade    
+                    200,
+                    { 'x-total-count': String(total) },
                     { users }
                 )
-
             });
 
             this.post('/users');

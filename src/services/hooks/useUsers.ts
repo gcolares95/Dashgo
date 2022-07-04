@@ -9,7 +9,7 @@ type User = {
 }
 
 // Separando a função que faz fetch dos dados do hook do React query
-export async function getUsers(): Promise<User[]> {
+export async function getUsers(): Promise<User[]> { // Promise, pois é uma função assíncrona
   const { data } = await api.get('users');
 
   const users = data.users.map((user) => {
