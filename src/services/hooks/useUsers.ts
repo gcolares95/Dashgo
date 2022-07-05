@@ -44,6 +44,6 @@ export async function getUsers(page: number): Promise<GetUsersResponse> { // Pro
 
 export function useUsers(page: number) {
   return useQuery(['users', page], () => getUsers(page), {
-    staleTime: 1000 * 5 // durante 5 segundos os dados estarão "fresh(frescos", ou seja, sem precisar ser re-carregados
+    staleTime: 1000 * 60 * 10// durante 10mnts segundos os dados estarão "fresh(frescos", ou seja, sem precisar ser re-carregados
   })
 }

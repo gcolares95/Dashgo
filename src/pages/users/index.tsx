@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr, Text, useBreakpointValue, Spinner } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr, Text, useBreakpointValue, Spinner, Link as ChakraLink } from "@chakra-ui/react";
 import { RiAddLine } from "react-icons/ri";
 import { useUsers } from "../../services/hooks/useUsers";
 
@@ -7,6 +7,8 @@ import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 import { useState } from "react";
+import { queryClient } from "../../services/queryClient";
+import { api } from "../../services/api";
 
 export default function UserList() {
     const [page, setPage] = useState(1);
@@ -17,8 +19,15 @@ export default function UserList() {
         lg: true
     });
 
-    console.log(page);
-
+    async function handlePrefetchUser(userId: number) {
+        await queryClient.prefetchQuery(['user', userId], async () =>  {
+            const response = await api.get(`/users/${userId}`)
+        
+            return response.data;
+        }, {
+            staleTime: 1000 * 60 * 10 // 10mnt, Tempo que os dados ficaram "frescos", ou seja, não precisaram ser carregados novamente
+        })
+    }
 
     return (
         <Box>
@@ -76,7 +85,9 @@ export default function UserList() {
                                                 </Td>
                                                 <Td>
                                                     <Box>
-                                                        <Text fontWeight="bold">{user.name}</Text>
+                                                        <ChakraLink color="purple.400" onMouseEnter={() => handlePrefetchUser(Number(user.id))}>
+                                                            <Text fontWeight="bold">{user.name}</Text>
+                                                        </ChakraLink>
                                                         <Text fontSize="sm" color="gray.300">{user.email}</Text>
                                                     </Box>
                                                 </Td>

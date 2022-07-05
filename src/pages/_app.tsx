@@ -4,14 +4,13 @@ import { theme } from '../styles/theme';
 import { SidebarDrawerProvider }  from '../context/SidebarDrawerContext';
 import { makeServer } from '../services/mirage/mirage';
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from '../services/queryClient';
 
 // Verificando qual ambiente está rodando nossa aplicação para inicir o mirage, process,env.NODE_ENV é setada automaticamente pelo next
 if (process.env.NODE_ENV === 'development') {
   makeServer();
 }
-
-const queryClient = new QueryClient()
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
