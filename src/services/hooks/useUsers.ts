@@ -8,9 +8,20 @@ type User = {
   createdAt: string;
 }
 
+type GetUsersResponse = {
+  totalCount: number;
+  users: User[];
+}
+
 // Separando a função que faz fetch dos dados do hook do React query
-export async function getUsers(): Promise<User[]> { // Promise, pois é uma função assíncrona
-  const { data } = await api.get('users');
+export async function getUsers(page: number): Promise<GetUsersResponse> { // Promise, pois é uma função assíncrona
+  const { data, headers } = await api.get('users', {
+    params: {
+      page,
+    }
+  });
+
+  const totalCount = Number(headers['x-total-count']);
 
   const users = data.users.map((user) => {
     return {
@@ -25,11 +36,14 @@ export async function getUsers(): Promise<User[]> { // Promise, pois é uma fun�
     };
   });
 
-  return users;
+  return {
+    users, 
+    totalCount,
+  };
 }
 
-export function useUsers() {
-  return useQuery('users', getUsers, {
+export function useUsers(page: number) {
+  return useQuery(['users', page], () => getUsers(page), {
     staleTime: 1000 * 5 // durante 5 segundos os dados estarão "fresh(frescos", ou seja, sem precisar ser re-carregados
   })
 }

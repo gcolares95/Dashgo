@@ -33,17 +33,12 @@ export function Pagination({
   const lastPage = Math.ceil(totalCountOfRegisters / registersPerPage);
 
   // Formato Componente de paginação:  1 ... 4 5 6 ... 20  | 4 e 6 são os previous
-  const previousPages =
-    currentPage > 1
+  const previousPages = currentPage > 1
       ? generatePagesArray(currentPage - 1 - siblingsCount, currentPage - 1)
       : [];
 
-  const nextPages =
-    currentPage > 1
-      ? generatePagesArray(
-          currentPage,
-          Math.min(currentPage + siblingsCount, lastPage)
-        )
+  const nextPages = currentPage < lastPage
+      ? generatePagesArray(currentPage, Math.min(currentPage + siblingsCount, lastPage))
       : [];
 
   return (
@@ -59,9 +54,9 @@ export function Pagination({
       </Box>
       <Stack direction="row" spacing="2">
         {/* Primeira Página */}
-        {currentPage > 1 + siblingsCount && (
+        {currentPage > (1 + siblingsCount) && (
           <>
-            <PaginationItem number={1} />
+            <PaginationItem onPageChange={onPageChange} number={1} />
             {currentPage > 2 + siblingsCount && (
                 <Text color="gray.300" w="8" textAlign="center">...</Text>
             )}
@@ -69,18 +64,16 @@ export function Pagination({
         )}
 
         {/* Pagina Anteriores */}
-        {previousPages.length > 0 &&
-          previousPages.map((page) => {
-            return <PaginationItem key={page} number={page} />;
+        {previousPages.length > 0 && previousPages.map((page) => {
+            return <PaginationItem onPageChange={onPageChange} key={page} number={page} />;
           })}
 
         {/* Pagina Atual */}
-        <PaginationItem number={currentPage} isCurrent />
+        <PaginationItem onPageChange={onPageChange} number={currentPage} isCurrent />
 
         {/* Pagina Posteriores */}
-        {nextPages.length > 0 &&
-          nextPages.map((page) => {
-            return <PaginationItem key={page} number={page} />;
+        {nextPages.length > 0 && nextPages.map((page) => {
+            return <PaginationItem onPageChange={onPageChange} key={page} number={page} />;
           })}
 
         {/* Última Página */}
@@ -89,7 +82,7 @@ export function Pagination({
             {(currentPage + 1 + siblingsCount) < lastPage && (
                 <Text color="gray.300" w="8" textAlign="center">...</Text>
             )}
-            <PaginationItem number={lastPage} />
+            <PaginationItem onPageChange={onPageChange} number={lastPage} />
           </>
         )}
       </Stack>
