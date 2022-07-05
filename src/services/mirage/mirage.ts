@@ -1,5 +1,5 @@
 // Configuração do mirage/servidor do mirage
-import { createServer, Factory, Model, Response } from 'miragejs';
+import { createServer, Factory, Model, Response, ActiveModelSerializer} from 'miragejs';
 import { faker } from '@faker-js/faker';
 
 type User = {
@@ -10,6 +10,10 @@ type User = {
 
 export function makeServer() {
     const server = createServer({
+        serializers: {                             // determina para o mirage, como os dados devem ser interpretados por ele
+            application: ActiveModelSerializer,    // ActiveModelSerializer permite trabalhar relacionamentos
+        },
+
         models: {                                  // quais dados queremos armazenar no "banco ficticio" que o mirage cria
             user: Model.extend<Partial<User>>({})  // user é como se fosse uma tabela no banco
         },                                         // <Partial<User> -> podemos usar user sem informar todos os campos necessariamente 
@@ -44,7 +48,9 @@ export function makeServer() {
                 const pageEnd = pageStart + Number(per_page);
                 
                 const users = this.serialize(schema.all('user')) // utilizando serialização, faz com que os dados retornados passem pelo processo de serialização do mirage, para ter controle dos dados e converter
-                    .users.slice(pageStart, pageEnd);
+                    .users
+                    // .sort((a, b) => a.created_at - b.created_at)
+                    .slice(pageStart, pageEnd);
 
                 return new Response(
                     200,
