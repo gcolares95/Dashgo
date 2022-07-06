@@ -50,6 +50,7 @@ export function makeServer() {
                 const users = this.serialize(schema.all('user')) // utilizando serialização, faz com que os dados retornados passem pelo processo de serialização do mirage, para ter controle dos dados e converter
                     .users
                     // .sort((a, b) => a.created_at - b.created_at)
+                    .sort((a: User, b: User) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                     .slice(pageStart, pageEnd);
 
                 return new Response(
